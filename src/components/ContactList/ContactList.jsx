@@ -1,32 +1,30 @@
-import propTypes from 'prop-types';
-import css from './ContactList.module.css';
+import React from 'react';
+import { Wrap } from './ContactList.styled';
+import { useSelector } from 'react-redux';
+import Contact from 'components/Contact/Contact';
+import { nanoid } from '@reduxjs/toolkit';
 
-export const ContactList = ({ contacts, handleDelete }) => (
-  <div className={css.wraperContactList}>
-    <ul className={css.contactList}>
-      {contacts.map((contact, id) => (
-        <li key={id} className={css.contactListItem}>
-          {contact.name}: {contact.number}
-          <button
-            type="button"
-            className={css.contactListItemBtn}
-            onClick={() => handleDelete(contact.id)}
-          >
-            Delete
-          </button>
-        </li>
-      ))}
-    </ul>
-  </div>
-);
+export default function ContactList() {
+  const contacts = useSelector(state => state.contacts.contacts);
+  const filter = useSelector(state => state.filter);
+  console.log(filter);
 
-ContactList.propTypes = {
-  contacts: propTypes.arrayOf(
-    propTypes.exact({
-      id: propTypes.string.isRequired,
-      name: propTypes.string.isRequired,
-      number: propTypes.string.isRequired,
-    })
-  ),
-  handleDelete: propTypes.func.isRequired,
-};
+  let arrContacts = contacts;
+
+  if (filter.filter !== null) {
+    arrContacts = contacts.filter(({ name }) =>
+      name.toLowerCase().includes(filter.filter)
+    );
+  }
+  console.log(arrContacts);
+  const showArr = Array.isArray(arrContacts) && arrContacts.length;
+
+  return (
+    <Wrap>
+      {showArr &&
+        arrContacts.map(({ id, name, number }) => {
+          return <Contact key={nanoid()} id={id} name={name} number={number} />;
+        })}
+    </Wrap>
+  );
+}

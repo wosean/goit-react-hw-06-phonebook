@@ -1,27 +1,17 @@
-import css from './Filter.module.css';
-import { useDispatch, useSelector } from 'react-redux';
-import { getFilter } from 'redux/selectors';
-import { setFilter } from 'redux/actions';
+import React from 'react';
+import { FilterInput, FilterTitle, FilterWrap } from './Filter.styled';
+import { useDispatch } from 'react-redux';
+import { setFilter } from 'redux/filterSlice';
 
-export const Filter = () => {
+export default function Filter() {
   const dispatch = useDispatch();
-  const filter = useSelector(getFilter);
-
-  const handleChange = e => {
-    dispatch(setFilter(e.target.value));
-  };
-
   return (
-    <div>
-      <label className={css.filterLabel}>Find contacts by Name </label>
-      <input
-        className={css.filterName}
+    <FilterWrap>
+      <FilterTitle>Find contacts by name</FilterTitle>
+      <FilterInput
         type="text"
-        name="filter"
-        placeholder="Enter filter"
-        value={filter}
-        onChange={handleChange}
+        onInput={event => dispatch(setFilter(event.target.value.toLowerCase()))}
       />
-    </div>
+    </FilterWrap>
   );
-};
+}
